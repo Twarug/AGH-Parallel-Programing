@@ -8,7 +8,6 @@
 
 #define ILE_MUSZE_WYPIC 3
 
-pthread_mutex_t kufel_mutex;
 int dostepne_kufle;
 
 
@@ -31,7 +30,6 @@ int main(void) {
   l_kr = 1000000000;
 #endif
 
-  pthread_mutex_init(&kufel_mutex, NULL);
   dostepne_kufle = l_kf;
 
   tab_klient = (pthread_t*)malloc(l_kl * sizeof(pthread_t));
@@ -51,8 +49,6 @@ int main(void) {
   if (roznica_kufli != 0)
     fprintf(stderr, "\nRóznica w liczbie kufili wynosi: %d\n", roznica_kufli);
   printf("\nZamykamy pub!\n");
-
-  pthread_mutex_destroy(&kufel_mutex);
 }
 
 void do_something_else_or_nothing() {
@@ -60,23 +56,11 @@ void do_something_else_or_nothing() {
 }
 
 int wybierzKufel() {
-  do {
-    pthread_mutex_lock(&kufel_mutex);
-    if (dostepne_kufle > 0) {
-      dostepne_kufle--;
-      pthread_mutex_unlock(&kufel_mutex);
-      return 0;
-    }
-   
-    pthread_mutex_unlock(&kufel_mutex);
-    do_something_else_or_nothing();
-  } while (true);
+  dostepne_kufle--;
 }
 
 void oddajKufel(int kufel) {
-  pthread_mutex_lock(&kufel_mutex);
   dostepne_kufle++;
-  pthread_mutex_unlock(&kufel_mutex);
 }
 
 void* watek_klient(void* arg_wsk) {

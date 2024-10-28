@@ -26,8 +26,8 @@ int main(void) {
   //printf("\nLiczba kranow: "); scanf("%d", &l_kr);
   l_kr = 1000000000; // wystarczająco dużo, żeby nie było rywalizacji
 #else
-  l_kl = 10000;
-  l_kf = 100;
+  l_kl = 100;
+  l_kf = 10000;
   l_kr = 1000000000;
 #endif
 
@@ -60,17 +60,9 @@ void do_something_else_or_nothing() {
 }
 
 int wybierzKufel() {
-  do {
-    pthread_mutex_lock(&kufel_mutex);
-    if (dostepne_kufle > 0) {
-      dostepne_kufle--;
-      pthread_mutex_unlock(&kufel_mutex);
-      return 0;
-    }
-   
-    pthread_mutex_unlock(&kufel_mutex);
-    do_something_else_or_nothing();
-  } while (true);
+  pthread_mutex_lock(&kufel_mutex);
+  dostepne_kufle--;
+  pthread_mutex_unlock(&kufel_mutex); 
 }
 
 void oddajKufel(int kufel) {
