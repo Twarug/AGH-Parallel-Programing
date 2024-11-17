@@ -3,8 +3,7 @@ package dev.twardosz.pr;
 import java.util.Scanner;
 import java.util.concurrent.Callable;
 
-//public class Calka_callable implements Callable<Double> {
-public class Calka_callable {
+public class Calka_callable implements Callable<Double> {
 
     private double dx;
     private double xp;
@@ -48,4 +47,8 @@ public class Calka_callable {
         calka.compute_integral();
     }
 
+    @Override
+    public Double call() {
+        return compute_integral();
+    }
 }
