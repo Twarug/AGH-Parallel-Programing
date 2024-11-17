@@ -1,6 +1,9 @@
 package dev.twardosz.pr;
 
-//public class Calka_callable implements Callable<Double>{
+import java.util.Scanner;
+import java.util.concurrent.Callable;
+
+//public class Calka_callable implements Callable<Double> {
 public class Calka_callable {
 
     private double dx;
@@ -33,6 +36,16 @@ public class Calka_callable {
         }
         System.out.println("Calka czastkowa: " + calka);
         return calka;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc = new Scanner(System.in);
+
+        System.out.println("Enter dx: ");
+        double dx = sc.nextDouble();
+
+        Calka_callable calka = new Calka_callable(0, 3.14, dx);
+        calka.compute_integral();
     }
 
 }
