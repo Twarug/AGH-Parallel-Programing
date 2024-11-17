@@ -100,9 +100,7 @@ class Obraz {
         for(int i=0;i<size_n;i++) {
             for(int j=0;j<size_m;j++) {
                 if(tab[i][j] == symbol)
-                    synchronized(histogram) {
-                        histogram[symbol - 33]++;
-                    }
+                    histogram[symbol - 33]++;
             }
         }
     }
@@ -112,19 +110,21 @@ class Obraz {
             for (int y = 0; y < size_m; y++)
                 for(int k = symbolStart; k < symbolEnd; k++)
                     if (tab[x][y] == tab_symb[k])
-                        synchronized (histogram) {
-                            histogram[k]++;
-                        }
+                        histogram[k]++;
     }
 
     public void calculate_histogram_parallel3(int x1, int x2, int dx, int y1, int y2, int dy) {
+        int[] localHistogram = new int[histogram.length];
         for (int x = x1; x < x2; x += dx)
             for (int y = y1; y < y2; y += dy)
                 for(int k = 0; k < 94; k++)
                     if (tab[x][y] == tab_symb[k])
-                        synchronized (histogram) {
-                            histogram[k]++;
-                        }
+                        localHistogram[k]++;
+
+        synchronized (histogram) {
+            for (int i = 0; i < histogram.length; i++)
+                histogram[i] += localHistogram[i];
+        }
     }
 
     public int size(int i) {
