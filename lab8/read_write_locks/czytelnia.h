@@ -6,6 +6,8 @@ typedef struct {
   int l_p; // liczba piszacych
   int l_c; // liczba czytajacych
   // <- zasoby czytelni
+  pthread_rwlock_t rwlock;  // zamek do odczytu i zapisu
+  pthread_mutex_t licznik_mutex; // mutex do ochrony liczników
 } cz_t;
 
 /*** Deklaracje procedur interfejsu ***/
