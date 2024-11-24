@@ -18,6 +18,9 @@ LIB = -L. -lm
 # katalogi z plikami naglowkowymi i wklejane pliki naglowkowe 
 INC = -I.
 
+# Add Debug fags
+CFL := $(CFL) -DMY_DEBUG
+
 czyt_pis: czyt_pis.o czytelnia.o
 	$(LD) $(LDFL) -o $(NAZWA) czyt_pis.o czytelnia.o $(LIB)
 
