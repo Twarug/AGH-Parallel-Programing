@@ -17,12 +17,11 @@ void bariera(void) {
   threads_waiting++; // Zwiększ licznik wątków oczekujących
 
   if (threads_waiting == threads_to_wait) {
+    threads_waiting = 0;
     pthread_cond_broadcast(&cond); // Obudź wszystkie oczekujące wątki
   } else {
     // Wątek czeka, aż wszystkie inne dotrą do bariery
-    while (threads_waiting < threads_to_wait) {
-      pthread_cond_wait(&cond, &mutex);
-    }
+    pthread_cond_wait(&cond, &mutex);
   }
   pthread_mutex_unlock(&mutex);
 }
