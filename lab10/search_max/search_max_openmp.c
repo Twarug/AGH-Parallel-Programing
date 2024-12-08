@@ -70,20 +70,21 @@ double search_max_openmp_task(
       int n_loc=ceil(n/num_tasks);   
 
       for(int itask=0; itask<num_tasks; itask++){
+        int p_task = p+itask*n_loc;
+        if(p_task>k) {
+          printf("Error in task decomposition! Exiting.\n");
+          exit(0);
+        }
+        int k_task = p+(itask+1)*n_loc-1;
+        if(k_task>k) k_task = k;
 
-	int p_task = p+itask*n_loc;
-	if(p_task>k) {
-	  printf("Error in task decomposition! Exiting.\n");
-	  exit(0);
-	}
-	int k_task = p+(itask+1)*n_loc-1;
-	if(k_task>k) k_task = k;
-
-#pragma omp task default(none)
-	{
-
-
-	} // end task definition
+        #pragma omp task default(none) firstprivate(A, p_task, k_task) shared(a_max)
+        {
+          double local_max = search_max(A, p_task, k_task);
+          #pragma omp critical (cs_a_max)
+          if(a_max < local_max)
+            a_max = local_max;
+        } // end task definition
 
       } // end loop over tasks
     } // end single region    

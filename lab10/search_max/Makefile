@@ -6,7 +6,7 @@ OPT = -O3 -fopenmp
 LIB = -lm
 
 test_search_max_openmp: test_search_max_openmp.o search_max_openmp.o 
-	$(LD) $(OPT) test_search_max_openmp.o search_max_openmp.o -o test_search_max_openmp $(LIB)
+	$(LD) $(OPT) test_search_max_openmp.o search_max_openmp.o -o out $(LIB)
 
 
 test_search_max_openmp.o: test_search_max_openmp.c search_max_openmp.h
@@ -18,4 +18,5 @@ search_max_openmp.o: search_max_openmp.c search_max_openmp.h
 
 
 clean:
+	rm -f out
 	rm -f *.o
