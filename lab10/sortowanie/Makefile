@@ -1,6 +1,6 @@
 # prosty Makefile dla prostych programow
 
-NAZWA = test_sortowanie
+NAZWA = out
 
 CC = gcc
 LD = gcc
