@@ -2,6 +2,9 @@
 #include<stdio.h>
 #include<omp.h>
 
+int f_threadprivate;
+#pragma omp threadprivate(f_threadprivate)
+
 int main(){
   
 #ifdef   _OPENMP
@@ -28,8 +31,10 @@ int main(){
   {
     int i;
     int d_local_private;
+    #pragma omp barrier
     d_local_private = a_shared + c_firstprivate;
     
+    #pragma omp critical
     for(i=0;i<10;i++){
       a_shared ++; 
     }
@@ -39,9 +44,11 @@ int main(){
     }
 
     for(i=0;i<10;i++){
+      #pragma omp atomic
       e_atomic+=omp_get_thread_num();
     }
     
+    #pragma omp critical
     {
       
       printf("\nw obszarze równoległym: aktualna liczba watkow %d, moj ID %d\n",
@@ -86,5 +93,15 @@ int main(){
   printf("\tb_private \t= %d\n", b_private);
   printf("\tc_firstprivate \t= %d\n", c_firstprivate);
   printf("\te_atomic \t= %d\n", e_atomic);
-  
+
+
+  printf("\n================================================\n\n");
+
+  omp_set_num_threads(5);
+
+  #pragma omp parallel 
+  f_threadprivate = omp_get_thread_num();
+
+  #pragma omp parallel 
+  printf("Thread %d: f_threadprivate = %d\n", omp_get_thread_num(), f_threadprivate);
 }

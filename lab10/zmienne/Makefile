@@ -18,11 +18,12 @@ LIB = -lm
 
 # zaleznosci i komendy
 openmp_watki_zmienne: openmp_watki_zmienne.o 
-	$(LOADER) $(OPT) openmp_watki_zmienne.o -o openmp_watki_zmienne $(LIB)
+	$(LOADER) $(OPT) openmp_watki_zmienne.o -o out $(LIB)
 
 # jak uzyskac plik openmp_watki_zmienne.o ?
 openmp_watki_zmienne.o: openmp_watki_zmienne.c
 	$(CCOMP) -c $(OPT) openmp_watki_zmienne.c $(INC) 
 
 clean:
+	rm -f out
 	rm -f *.o
