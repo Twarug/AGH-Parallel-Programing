@@ -136,8 +136,31 @@ double bin_search_max_task(
   int level      
 			   )
 {
+  if (p >= r)
+    return A[p];
+
+  int q = (p + r) / 2;
+  double leftMax, rightMax;
+
+  if (level <= max_level) {
+    #pragma omp task shared(leftMax) firstprivate(A, p, q, level) default(none)
+    leftMax = bin_search_max_task(A, p, q, level + 1);
+    
+    #pragma omp task shared(rightMax) firstprivate(A, q, r, level) default(none)
+    rightMax = bin_search_max_task(A, q + 1, r, level + 1);
+
+    #pragma omp taskwait
+  } 
+  else {
+    leftMax = search_max(A, p, q);
+    rightMax = search_max(A, q + 1, r);
+  }
 
 
+  if(leftMax < rightMax)
+    return rightMax;
+  else
+    return leftMax;
 }
 
 /********** parallel binary search (array not sorted) - openmp ***********/
