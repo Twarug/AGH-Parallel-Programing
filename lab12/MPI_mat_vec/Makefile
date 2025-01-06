@@ -1,10 +1,12 @@
+NAZWA = out
+
 # kompilator c
-CCOMP = /usr/lib64/openmpi/bin/mpicc
+CCOMP = mpicc
 
 # konsolidator
-LOADER = /usr/lib64/openmpi/bin/mpicc
+LOADER = mpicc
 
-MPIRUN = /usr/lib64/openmpi/bin/mpiexec 
+MPIRUN = mpiexec 
 
 # opcje optymalizacji:
 # wersja do debugowania
@@ -28,9 +30,9 @@ LIB =  -lm
 all: mat_vec_row_MPI run
 
 #mat_vec_row_MPI: mat_vec_row_MPI.o mat_vec.o pomiar_czasu.o
-#	$(LOADER) $(OPT) mat_vec_row_MPI.o mat_vec.o pomiar_czasu.o -o mat_vec_row_MPI $(LIB)
+#	$(LOADER) $(OPT) mat_vec_row_MPI.o mat_vec.o pomiar_czasu.o -o $(NAZWA) $(LIB)
 mat_vec_row_MPI: mat_vec_row_MPI.o
-	$(LOADER) $(OPT) mat_vec_row_MPI.o -o mat_vec_row_MPI $(LIB)
+	$(LOADER) $(OPT) mat_vec_row_MPI.o -o $(NAZWA) $(LIB)
 
 #mat_vec_row_MPI.o: mat_vec_row_MPI.c pomiar_czasu.h
 mat_vec_row_MPI.o: mat_vec_row_MPI.c
@@ -43,7 +45,7 @@ mat_vec_row_MPI.o: mat_vec_row_MPI.c
 #	$(CCOMP) -c $(OPT) pomiar_czasu.c
 
 run:
-	$(MPIRUN) -np 4 --oversubscribe  ./mat_vec_row_MPI
+	$(MPIRUN) -np 4 ./$(NAZWA)
 
 clean:
-	rm -f *.o ./mat_vec_row_MPI
+	rm -f *.o $(NAZWA)

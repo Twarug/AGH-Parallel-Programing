@@ -20,8 +20,7 @@
 
 void mat_vec(double* a, double* x, double* y, int n, int nt);
 
-int
-main ( int argc, char** argv )
+int main(int argc, char** argv)
 {
   static double x[WYMIAR],y[WYMIAR],z[WYMIAR]; // z is sized for column decomposition
   double *a;
@@ -98,14 +97,14 @@ main ( int argc, char** argv )
     // point-to-point not optimal communication
     if(rank==0){
       
-     for(i=0;i<WYMIAR*n_wier;i++) a_local[i]=a[i];
+      for(i=0;i<WYMIAR*n_wier;i++) a_local[i]=a[i];
      
       for(i=1;i<size-1;i++){
-	MPI_Send( &a[i*WYMIAR*n_wier], n_wier*WYMIAR, MPI_DOUBLE, i, tag, MPI_COMM_WORLD );
-	MPI_Send( &x[i*n_wier], n_wier, MPI_DOUBLE, i, tag, MPI_COMM_WORLD );
+        MPI_Send( &a[i*WYMIAR*n_wier], n_wier*WYMIAR, MPI_DOUBLE, i, tag, MPI_COMM_WORLD );
+        MPI_Send( &x[i*n_wier], n_wier, MPI_DOUBLE, i, tag, MPI_COMM_WORLD );
       }
-      
-      
+            
+            
       MPI_Send( &a[(size-1)*WYMIAR*n_wier], n_wier_last*WYMIAR, MPI_DOUBLE, size-1, tag, MPI_COMM_WORLD );
       MPI_Send( &x[(size-1)*n_wier], n_wier_last, MPI_DOUBLE, size-1, tag, MPI_COMM_WORLD );
       
@@ -115,29 +114,29 @@ main ( int argc, char** argv )
       /* 			 a[(size-1)*WYMIAR*n_wier+n_wier_last*WYMIAR-1]); */
       
     } else {
-      
-      
+            
+            
       for(i=0;i<WYMIAR;i++) x[i]=0.0;
       
       source = 0;
       if(rank<size-1){
-	
-	MPI_Recv( a_local, n_wier*WYMIAR, MPI_DOUBLE, source,
-		  MPI_ANY_TAG, MPI_COMM_WORLD, &status );
-	MPI_Recv( &x[rank*n_wier], n_wier, MPI_DOUBLE, source,
-		  MPI_ANY_TAG, MPI_COMM_WORLD, &status );
-	
-      } else {
-	
-	MPI_Recv( a_local, n_wier_last*WYMIAR, MPI_DOUBLE, source,
-		  MPI_ANY_TAG, MPI_COMM_WORLD, &status );
-	MPI_Recv( &x[(size-1)*n_wier], n_wier_last, MPI_DOUBLE, source,
-		  MPI_ANY_TAG, MPI_COMM_WORLD, &status );	
-	
+        
+        MPI_Recv( a_local, n_wier*WYMIAR, MPI_DOUBLE, source,
+            MPI_ANY_TAG, MPI_COMM_WORLD, &status );
+        MPI_Recv( &x[rank*n_wier], n_wier, MPI_DOUBLE, source,
+            MPI_ANY_TAG, MPI_COMM_WORLD, &status );
+        
+            } else {
+        
+        MPI_Recv( a_local, n_wier_last*WYMIAR, MPI_DOUBLE, source,
+            MPI_ANY_TAG, MPI_COMM_WORLD, &status );
+        MPI_Recv( &x[(size-1)*n_wier], n_wier_last, MPI_DOUBLE, source,
+            MPI_ANY_TAG, MPI_COMM_WORLD, &status );	
+        
       }
-           
-    }
     
+    }
+
 
     if(rank==0) {
       printf("Starting MPI matrix-vector product with block row decomposition!\n");
@@ -148,18 +147,18 @@ main ( int argc, char** argv )
     //MPI_Allgather(&x[rank*n_wier], n_wier, MPI_DOUBLE, x, n_wier, MPI_DOUBLE, MPI_COMM_WORLD );
     MPI_Allgather( MPI_IN_PLACE, n_wier, MPI_DOUBLE, x, n_wier, MPI_DOUBLE, MPI_COMM_WORLD );
 
-    
+
     for(i=0;i<n_wier;i++){
             
       double t=0.0;
       int ni = n*i;
       
       for(j=0;j<n;j++){
-	t+=a_local[ni+j]*x[j];
-	//if(i==1){
-	//  printf("rank %d: row %d, column %d, a %lf, x %lf, current y %lf\n", 
-	//         rank, i, j, a_local[ni+j], x[j], t);
-	//}
+        t+=a_local[ni+j]*x[j];
+        //if(i==1){
+        //  printf("rank %d: row %d, column %d, a %lf, x %lf, current y %lf\n", 
+        //         rank, i, j, a_local[ni+j], x[j], t);
+        //}
       }
       //printf("rank %d: row %d, final y %lf\n", rank, i, t);
       z[i]=t;
@@ -188,18 +187,18 @@ main ( int argc, char** argv )
     } else {
       
       for(i=1;i<size;i++){
-	MPI_Recv( &z[i*n_wier], n_wier, MPI_DOUBLE, i, tag, MPI_COMM_WORLD, &status  );
+	      MPI_Recv( &z[i*n_wier], n_wier, MPI_DOUBLE, i, tag, MPI_COMM_WORLD, &status  );
 	
       }
       
     }
 
-      if(rank==0){
+    if(rank==0){
       
       for(i=0;i<WYMIAR;i++){
-	if(fabs(y[i]-z[i])>1.e-9*z[i]) {
-	  printf("Blad! i=%d, y[i]=%lf, z[i]=%lf\n",i, y[i], z[i]);
-	}
+        if(fabs(y[i]-z[i])>1.e-9*z[i]) {
+          printf("Blad! i=%d, y[i]=%lf, z[i]=%lf\n",i, y[i], z[i]);
+        }
       }
       
     }
@@ -233,21 +232,21 @@ main ( int argc, char** argv )
       double t=0.0;
       int ni;
       if(rank==0){
-	// rank==0 stores the whole a - next row starts after n elements
-	ni = n_col*i;
+        // rank==0 stores the whole a - next row starts after n elements
+        ni = n_col*i;
       } else {
-	// ranks>0 store the parts of a - next row starts after n_col elements
-	ni = n_col*i;
+        // ranks>0 store the parts of a - next row starts after n_col elements
+        ni = n_col*i;
       }
       
       // assuming the whole x stored at all processes (should be of size n_col with jj=0)
       int jj = rank*n_col;
       for(j=0;j<n_col;j++){
-	t+=a_local[ni+j]*x[jj+j];
-	//if(i==1){
-	//  printf("rank %d: row %d, column %d, a %lf, x %lf, current y %lf\n", 
-	//	 rank, i, j, a_local[ni+j], x[j], t);
-	//}
+        t+=a_local[ni+j]*x[jj+j];
+        //if(i==1){
+        //  printf("rank %d: row %d, column %d, a %lf, x %lf, current y %lf\n", 
+        //	 rank, i, j, a_local[ni+j], x[j], t);
+        //}
       }
       //printf("rank %d: row %d, final y %lf\n", rank, i, t);
       z[i]=t;
@@ -308,12 +307,12 @@ main ( int argc, char** argv )
     if(rank==0){
       
       for(i=0;i<WYMIAR;i++){
-	if(fabs(y[i]-z[i])>1.e-9*z[i]) {
-	  printf("Blad! i=%d, y[i]=%lf, z[i]=%lf - complete the code for column decomposition\n",
-		 i, y[i], z[i]);
-	  break;
-	  //printf("Blad! i=%d, y[i]=%lf, z[i]=%lf\n",i, y[i], z[i]);
-	}
+        if(fabs(y[i]-z[i])>1.e-9*z[i]) {
+          printf("Blad! i=%d, y[i]=%lf, z[i]=%lf - complete the code for column decomposition\n",
+          i, y[i], z[i]);
+          break;
+          //printf("Blad! i=%d, y[i]=%lf, z[i]=%lf\n",i, y[i], z[i]);
+        }
       }
       
     }
@@ -336,7 +335,7 @@ void mat_vec(double* a, double* x, double* y, int nn, int nt)
   
   register int n=nn;
   register int i;
-//#pragma omp parallel for num_threads(nt) default(none) shared (a,x,y,n)
+  //#pragma omp parallel for num_threads(nt) default(none) shared (a,x,y,n)
   for(i=0;i<n;i+=2){
     register double ty1 = 0;
     register double ty2 = 0;
